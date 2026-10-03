@@ -18,12 +18,13 @@ def eh_administrador():
 def montar_socket_raw(ip_interface):
     s = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_IP)
     s.bind((ip_interface, 0))
-    s.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, 1)
     s.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)
     return s
 
 
 def interpretar_ip(pacote):
+    if len(pacote) < 20:
+        return None
     cabecalho = pacote[:20]
     versao_ihl, _, _, _, _, ttl, protocolo, _, origem, destino = struct.unpack(
         "!BBHHHBBH4s4s", cabecalho
@@ -38,6 +39,8 @@ def interpretar_ip(pacote):
 
 
 def interpretar_tcp(pacote, offset):
+    if len(pacote) < offset + 14:
+        return None
     porta_origem, porta_destino, _, _, offset_flags = struct.unpack(
         "!HHIIH", pacote[offset:offset + 14]
     )
@@ -83,12 +86,13 @@ def main():
         while True:
             pacote, _ = s.recvfrom(65535)
             ip = interpretar_ip(pacote)
-            if ip["protocolo"] != 6:  # 6 = TCP
+            if ip is None or ip["protocolo"] != 6:  # 6 = TCP
                 continue
 
-            porta_origem, porta_destino, offset_payload = interpretar_tcp(
-                pacote, ip["tamanho_cabecalho"]
-            )
+            tcp = interpretar_tcp(pacote, ip["tamanho_cabecalho"])
+            if tcp is None:
+                continue
+            porta_origem, porta_destino, offset_payload = tcp
             if PORTA_ALVO not in (porta_origem, porta_destino):
                 continue
 

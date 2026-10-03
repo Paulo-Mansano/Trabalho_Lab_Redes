@@ -52,20 +52,41 @@ para que a VM-observador enxergue o tráfego entre as outras duas.
 
 ## Configuração das VMs (VirtualBox)
 
-1. Crie 3 VMs (Windows, a versão que tiverem disponível é suficiente — não
-   precisa de placa gráfica dedicada nem de muita RAM, 2 GB bastam).
-2. Em cada VM: **Configurações → Rede → Adaptador 1**, mude para **Rede
-   Interna**, nome `labredes` (mesmo nome nas 3 VMs).
-3. Ainda no adaptador, expanda **Avançado → Modo Promíscuo** e selecione
-   **Permitir Tudo** — nas 3 VMs (o observador precisa disso pra receber, mas
-   deixar nas 3 evita esquecimento e não tem custo).
-4. Dentro de cada VM Windows, configure IP fixo na interface (Painel de
+Caminho mais rápido: não instale o Windows 3 vezes. Baixe a VM gratuita
+"Windows 11 dev environment" da Microsoft (pronta em formato VirtualBox,
+avaliação renovável), importe uma vez, configure (rede + Python) e depois
+**Máquina → Clonar → Clonagem Completa** (marcando "reinicializar MAC") duas
+vezes para gerar as outras duas VMs, em vez de rodar o instalador do zero.
+
+1. Nomeie as 3 VMs como `VM-servidor`, `VM-cliente`, `VM-observador` (ou ajuste
+   os nomes no topo de `infra/configurar_rede_vms.ps1`).
+2. Com as 3 VMs **desligadas**, rode no PowerShell do host Windows:
+   ```
+   fase1\infra\configurar_rede_vms.ps1
+   ```
+   Isso aplica nas 3 de uma vez: adaptador 1 em **Rede Interna** `labredes` +
+   **Modo Promíscuo: Permitir Tudo** (via `VBoxManage`, sem precisar abrir a
+   tela de Configurações de cada VM na mão).
+3. Dentro de cada VM Windows já ligada, configure o IP fixo (o script imprime
+   o comando `netsh` de cada uma ao final; ou faça manualmente em Painel de
    Controle → Rede → Propriedades do adaptador → IPv4):
    - VM-servidor: `10.10.10.10`, máscara `255.255.255.0`
    - VM-cliente: `10.10.10.20`, máscara `255.255.255.0`
    - VM-observador: `10.10.10.30`, máscara `255.255.255.0`
    - Gateway/DNS: deixe em branco (rede interna, sem saída — isso é proposital).
+4. **Libere a porta 7070 no firewall da VM-servidor.** Por padrão o Firewall do
+   Windows bloqueia conexões de entrada: sem isso o cliente não conecta e parece
+   "bug no código" — é o erro nº 1 ao montar o laboratório. Na VM-servidor, no
+   PowerShell como Administrador:
+   ```
+   netsh advfirewall firewall add rule name="SLAP 7070" dir=in action=allow protocol=TCP localport=7070
+   ```
+   (Como a rede é interna e isolada, sem saída, alternativamente pode-se desativar
+   o Firewall do Windows nessa interface.)
 5. Teste conectividade entre as VMs com `ping` antes de rodar qualquer coisa.
+   Se as VMs estiverem muito lentas, desligue a "Integridade de memória"
+   (Segurança do Windows → Segurança do dispositivo → Isolamento de núcleo): VBS
+   /Hyper-V conflita com o VirtualBox e o derruba para o modo lento.
 
 ## Como rodar
 
@@ -76,11 +97,19 @@ python servidor\servidor.py
 (usa os padrões `10.10.10.10:7070`; para testar localmente antes de montar as
 VMs, rode `python servidor\servidor.py 127.0.0.1 7070`)
 
-**VM-observador** (PowerShell/CMD como Administrador — `SIO_RCVALL` exige
+**VM-observador** (PowerShell como Administrador — `SIO_RCVALL` exige
 privilégio elevado no Windows):
 ```
 python observador\sniffer.py 10.10.10.30
 ```
+
+> ⚠️ **Essencial:** desligue o Firewall do Windows na VM-observador antes de
+> rodar o sniffer. Com ele ligado, o Defender descarta os pacotes capturados
+> antes de chegarem ao socket raw e o sniffer captura **zero** (sintoma clássico:
+> "Sniffer ativo" mas nenhuma linha aparece). Como a rede é isolada, é seguro:
+> ```
+> netsh advfirewall set allprofiles state off
+> ```
 
 **VM-cliente:**
 ```
