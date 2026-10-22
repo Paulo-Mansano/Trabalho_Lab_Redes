@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia do Trabalho — Fases 1 e 2 (SLAP)</title>
+<style>
+  :root{
+    --bg:#0f1420; --panel:#161c2b; --panel2:#1d2538; --ink:#e7ecf5; --muted:#9aa7bd;
+    --accent:#5aa9ff; --accent2:#7ee0b8; --warn:#ffcf6b; --danger:#ff7a7a;
+    --code-bg:#0b0f18; --border:#283349; --kw:#c792ea; --str:#7ee0b8; --com:#6b7a94; --fn:#82aaff;
+  }
+  @media (prefers-color-scheme:light){
+    :root{ --bg:#f5f7fb; --panel:#ffffff; --panel2:#eef2f8; --ink:#16202e; --muted:#5b6b82;
+      --accent:#1769d6; --accent2:#0e9e6e; --warn:#9a6b00; --danger:#c62828;
+      --code-bg:#0b0f18; --border:#d6deea; --kw:#8a4bd6; --str:#0e9e6e; --com:#6b7a94; --fn:#2a6fd6; }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 20px 80px}
+  header.hero{border:1px solid var(--border);background:linear-gradient(160deg,var(--panel),var(--panel2));
+    border-radius:16px;padding:28px 26px;margin-bottom:24px}
+  header.hero .tag{display:inline-block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);font-weight:700;margin-bottom:8px}
+  h1{font-size:28px;margin:.1em 0 .25em;line-height:1.2}
+  header.hero p{color:var(--muted);margin:.3em 0 0}
+  h2{font-size:22px;margin:40px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);scroll-margin-top:16px}
+  h3{font-size:17px;margin:24px 0 8px;color:var(--accent)}
+  .part{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+    padding:3px 10px;border-radius:6px;margin:34px 0 0}
+  .part.f1{background:rgba(90,169,255,.16);color:var(--accent)}
+  .part.f2{background:rgba(126,224,184,.16);color:var(--accent2)}
+  .part.tut{background:rgba(255,207,107,.16);color:var(--warn)}
+  p,li{color:var(--ink)}
+  .muted{color:var(--muted)}
+  a{color:var(--accent)}
+  nav.toc{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:8px}
+  nav.toc strong{display:block;margin:10px 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+  nav.toc ul{margin:0 0 6px;padding-left:18px}
+  nav.toc a{text-decoration:none}
+  nav.toc a:hover{text-decoration:underline}
+  pre{background:var(--code-bg);color:#e7ecf5;border:1px solid var(--border);border-radius:10px;
+    padding:14px 16px;overflow:auto;font:13.5px/1.6 "SF Mono",Consolas,"Roboto Mono",Menlo,monospace;margin:14px 0}
+  code{font-family:"SF Mono",Consolas,"Roboto Mono",Menlo,monospace}
+  p code,li code,td code{background:var(--panel2);border:1px solid var(--border);border-radius:5px;
+    padding:1px 6px;font-size:13px;color:var(--accent2)}
+  pre .c{color:var(--com);font-style:italic}
+  pre .k{color:var(--kw)} pre .s{color:var(--str)} pre .f{color:var(--fn)}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin:16px 0}
+  .callout{border-left:4px solid var(--accent);background:var(--panel);border-radius:0 10px 10px 0;padding:12px 16px;margin:16px 0}
+  .callout.warn{border-left-color:var(--warn)}
+  .callout.danger{border-left-color:var(--danger)}
+  .callout.ok{border-left-color:var(--accent2)}
+  .callout .lbl{font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14.5px}
+  th,td{border:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:var(--panel2);font-size:13px}
+  .diagram{background:var(--code-bg);color:#cdd7ea;border:1px solid var(--border);border-radius:10px;
+    padding:16px;overflow:auto;font:12.5px/1.45 "SF Mono",Consolas,monospace;white-space:pre}
+  details{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:4px 16px;margin:10px 0}
+  details[open]{background:var(--panel2)}
+  summary{cursor:pointer;font-weight:600;padding:10px 0;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:"▸ ";color:var(--accent)}
+  details[open] summary::before{content:"▾ "}
+  .ans{border-top:1px dashed var(--border);margin-top:4px;padding-top:10px}
+  .step{display:flex;gap:14px;margin:14px 0;align-items:flex-start}
+  .step .n{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#06101f;
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+  .step.g .n{background:var(--accent2)}
+  .step .b{flex:1}
+  .vm{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;border:1px solid var(--border)}
+  .vm.srv{color:#7ee0b8} .vm.cli{color:#5aa9ff} .vm.obs{color:#ffcf6b}
+  .pill{font-size:12px;color:var(--muted)}
+  hr{border:none;border-top:1px solid var(--border);margin:30px 0}
+  @media print{body{background:#fff;color:#000}.diagram,pre{background:#f4f4f4;color:#000}details{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <span class="tag">Laboratório de Redes · PUCRS</span>
+  <h1>Guia do Trabalho — Interceptação e Defesa (SLAP)</h1>
+  <p>Explicação do código com trechos reais, teoria por trás, perguntas da banca e tutoriais de execução (no Mac em um só computador <strong>ou</strong> com as VMs). Cobre a <strong>Fase 1</strong> (escuta passiva) e a <strong>Fase 2</strong> (MITM ativo). Abre offline.</p>
+</header>
+
+<nav class="toc">
+  <strong>Fundamentos</strong>
+  <ul>
+    <li><a href="#visao">1. Visão geral e topologia</a></li>
+    <li><a href="#teoria">2. Teoria: as camadas</a></li>
+    <li><a href="#slap">3. O protocolo SLAP</a></li>
+  </ul>
+  <strong>Fase 1 — escuta passiva</strong>
+  <ul>
+    <li><a href="#servidor">4. Servidor</a> · <a href="#cliente">5. Cliente</a> · <a href="#sniffer">6. Sniffer (socket raw)</a> · <a href="#porque1">7. Por que a escuta funciona</a></li>
+  </ul>
+  <strong>Fase 2 — MITM ativo</strong>
+  <ul>
+    <li><a href="#mitm">8. O que é um MITM</a> · <a href="#proxy">9. O proxy (código)</a> · <a href="#concorrencia">10. Concorrência</a> · <a href="#demo2">11. A adulteração</a></li>
+  </ul>
+  <strong>Execução e apresentação</strong>
+  <ul>
+    <li><a href="#tutorial">12. Tutorial: como rodar tudo (Mac e VMs)</a></li>
+    <li><a href="#perguntas">13. Perguntas prováveis da banca</a></li>
+    <li><a href="#roteiro2">14. Roteiro de apresentação (Fase 2)</a></li>
+  </ul>
+</nav>
+
+<!-- =========================== FUNDAMENTOS =========================== -->
+<h2 id="visao">1. Visão geral e topologia</h2>
+<p>O trabalho prova, em etapas, por que um protocolo de aplicação <strong>sem proteção</strong> é vulnerável. Criamos um protocolo de login próprio (<strong>SLAP</strong>) e o atacamos:</p>
+<table>
+  <tr><th>Fase</th><th>O que faz</th><th>Quebra que demonstra</th></tr>
+  <tr><td><strong>1</strong></td><td>Sniffer passivo lê o tráfego</td><td>Confidencialidade (lê a senha)</td></tr>
+  <tr><td><strong>2</strong></td><td>Proxy MITM lê e <em>altera</em> o tráfego</td><td>Integridade e autenticação</td></tr>
+  <tr><td><strong>3</strong></td><td>TLS + certificado</td><td>Defesa: o ataque passa a falhar</td></tr>
+</table>
+<div class="diagram">            Rede Interna VirtualBox "labredes"  (modo promíscuo: Permitir Tudo)
+   ┌───────────────────────────────────────────────────────────────┐
+  VM-cliente  ───────────►  switch virtual  ◄───────────  VM-servidor
+  10.10.10.20                     │                        10.10.10.10:7070
+                                  ▼
+                            VM-observador 10.10.10.30
+                            Fase 1: sniffer (escuta)   Fase 2: proxy (intercepta)
+   └───────────────────────────────────────────────────────────────┘</div>
+<div class="callout"><span class="lbl">O tripé da segurança</span><br>
+<strong>Confidencialidade</strong> (ninguém lê) — quebrada na Fase 1. <strong>Integridade</strong> (ninguém altera) e <strong>Autenticação</strong> (é quem diz ser) — quebradas na Fase 2. Todas defendidas na Fase 3 com <strong>TLS</strong>.</div>
+
+<h2 id="teoria">2. Teoria: as camadas</h2>
+<p>Quando o cliente envia <code>PASS senha123</code>, essa string é <strong>encapsulada</strong> em camadas, cada uma com seu cabeçalho:</p>
+<div class="diagram">┌─────────────────────────────────────────────────────────────┐
+│ Cabeçalho IP │ Cabeçalho TCP │ "PASS senha123\r\n"            │
+│ (origem/dest)│ (portas/seq)  │  ← PAYLOAD DA APLICAÇÃO (SLAP) │
+└─────────────────────────────────────────────────────────────┘
+   20 bytes       20+ bytes        dados em TEXTO CLARO</div>
+<ul>
+  <li><strong>Aplicação (SLAP):</strong> o texto que criamos. Sem cifragem, viaja legível.</li>
+  <li><strong>Transporte (TCP):</strong> entrega confiável e ordenada; identifica a conexão pelas <strong>portas</strong> (7070).</li>
+  <li><strong>Rede (IP):</strong> endereça por <strong>IP de origem/destino</strong>.</li>
+  <li><strong>Enlace (Ethernet):</strong> entrega quadro a quadro na rede local, por MAC.</li>
+</ul>
+<p>O sniffer (Fase 1) faz o caminho inverso — <strong>desencapsula</strong>: lê o cabeçalho IP para achar onde o TCP começa, lê o TCP para achar o payload, e então lê o texto SLAP.</p>
+
+<h2 id="slap">3. O protocolo SLAP</h2>
+<p><strong>SLAP</strong> (<em>Simple Login Access Protocol</em>): texto ASCII, uma linha por mensagem terminada em <code>\r\n</code>, inspirado no FTP (códigos <code>220/331/230/530/221</code>).</p>
+<div class="diagram">Servidor                          Cliente
+   │──── 220 slap-server pronto ────►│
+   │◄────────── USER aluno ──────────│
+   │──── 331 senha requerida ───────►│
+   │◄────────── PASS senha123 ───────│   ← credencial em texto claro
+   │──── 230 login bem-sucedido ────►│   (ou 530 se inválido)
+   │◄────────── QUIT ────────────────│
+   │──── 221 ate mais ──────────────►│</div>
+
+<!-- =========================== FASE 1 =========================== -->
+<span class="part f1">Fase 1 — Escuta passiva</span>
+<h2 id="servidor">4. O servidor <span class="pill">fase1/servidor/servidor.py</span></h2>
+<pre><code><span class="k">def</span> <span class="f">main</span>():
+    servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  <span class="c"># IPv4 + TCP</span>
+    servidor.bind((host, porta))        <span class="c"># reserva o 10.10.10.10:7070</span>
+    servidor.listen()
+    <span class="k">while</span> <span class="k">True</span>:
+        conexao, endereco = servidor.accept()   <span class="c"># bloqueia até chegar um cliente</span>
+        threading.Thread(target=atender_cliente,
+                         args=(conexao, endereco), daemon=<span class="k">True</span>).start()</code></pre>
+<p><strong>Teoria:</strong> <code>SOCK_STREAM</code> = TCP. O padrão <code>bind</code>+<code>listen</code>+<code>accept</code> define um servidor TCP; cada conexão roda em uma <strong>thread</strong>, atendendo vários clientes ao mesmo tempo.</p>
+<pre><code><span class="k">def</span> <span class="f">atender_cliente</span>(conexao, endereco):
+    enviar(conexao, <span class="s">"220 slap-server pronto"</span>)
+    linha = receber_linha(conexao)              <span class="c"># espera "USER ..."</span>
+    usuario = linha[<span class="s">5</span>:].strip()
+    enviar(conexao, <span class="s">"331 senha requerida"</span>)
+    linha = receber_linha(conexao)              <span class="c"># espera "PASS ..."</span>
+    senha = linha[<span class="s">5</span>:].strip()
+    <span class="k">if</span> USUARIOS.get(usuario) == senha:         <span class="c"># credenciais em texto claro (de propósito)</span>
+        enviar(conexao, <span class="s">"230 login bem-sucedido"</span>)
+    <span class="k">else</span>:
+        enviar(conexao, <span class="s">"530 usuario ou senha invalidos"</span>)</code></pre>
+
+<h2 id="cliente">5. O cliente <span class="pill">fase1/cliente/cliente.py</span></h2>
+<pre><code><span class="k">with</span> socket.socket(socket.AF_INET, socket.SOCK_STREAM) <span class="k">as</span> conexao:
+    conexao.connect((host, porta))              <span class="c"># conecta ao servidor (ou ao proxy, na Fase 2)</span>
+    enviar(conexao, <span class="s">f"USER {usuario}"</span>)
+    print(<span class="s">"&gt;"</span>, <span class="s">"PASS "</span> + <span class="s">"*"</span> * len(senha))  <span class="c"># mascara na TELA apenas</span>
+    enviar(conexao, <span class="s">f"PASS {senha}"</span>)              <span class="c"># mas envia a senha REAL na rede</span></code></pre>
+<div class="callout warn"><span class="lbl">Detalhe que impressiona</span><br>
+O cliente mostra <code>PASS ********</code>, mas <strong>envia <code>PASS senha123</code> em claro</strong>. A máscara é só cosmética — o atacante captura a senha real.</div>
+
+<h2 id="sniffer">6. O sniffer <span class="pill">fase1/observador/sniffer.py</span></h2>
+<pre><code><span class="k">def</span> <span class="f">montar_socket_raw</span>(ip_interface):
+    s = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_IP)
+    s.bind((ip_interface, <span class="s">0</span>))                 <span class="c"># liga à placa do observador</span>
+    s.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)  <span class="c"># "me entregue TODOS os pacotes IP"</span>
+    <span class="k">return</span> s</code></pre>
+<p><strong>Teoria:</strong> um socket comum só recebe o que é endereçado a ele. Um <strong>socket raw</strong> (<code>SOCK_RAW</code>) entrega o pacote inteiro, com os cabeçalhos IP/TCP, para o programa interpretar. No Windows, <code>SIO_RCVALL</code> coloca a placa em modo de recepção total (promíscuo) — por isso exige <strong>Administrador</strong>.</p>
+<pre><code><span class="k">def</span> <span class="f">interpretar_ip</span>(pacote):
+    versao_ihl, _, _, _, _, ttl, protocolo, _, origem, destino = \
+        struct.unpack(<span class="s">"!BBHHHBBH4s4s"</span>, pacote[:<span class="s">20</span>])
+    tamanho_cabecalho = (versao_ihl &amp; <span class="s">0x0F</span>) * <span class="s">4</span>   <span class="c"># IHL: onde o TCP começa</span>
+    <span class="k">return</span> {<span class="s">"protocolo"</span>: protocolo, ...}</code></pre>
+<p>Depois o código lê o cabeçalho TCP (as portas e o <em>data offset</em>), soma os tamanhos para achar o <strong>início do payload</strong>, filtra a porta 7070 e revela <code>USER</code>/<code>PASS</code>. Resultado real:</p>
+<pre><code>10.10.10.20:49673 -&gt; 10.10.10.10:7070  *** CREDENCIAL CAPTURADA *** 'USER aluno'
+10.10.10.20:49673 -&gt; 10.10.10.10:7070  *** CREDENCIAL CAPTURADA *** 'PASS senha123'</code></pre>
+
+<h2 id="porque1">7. Por que a escuta funciona (e por que quase não funcionou)</h2>
+<p>Duas camadas cooperam: (1) o <strong>modo promíscuo</strong> da rede virtual espelha todos os quadros para o observador; (2) o <strong>socket raw + <code>SIO_RCVALL</code></strong> entrega tudo ao programa.</p>
+<div class="callout danger"><span class="lbl">A pegadinha</span><br>
+Com o <strong>Firewall do Windows ligado</strong> na VM-observador, o Defender descarta os pacotes antes do socket raw e o sniffer captura <strong>zero</strong>. Solução: <code>netsh advfirewall set allprofiles state off</code>. Se travar na demo, é quase sempre isso.</div>
+
+<!-- =========================== FASE 2 =========================== -->
+<span class="part f2">Fase 2 — MITM ativo</span>
+<h2 id="mitm">8. O que é um Man-in-the-Middle (MITM)</h2>
+<p>Na Fase 1 o atacante só <em>ouvia</em>. Na Fase 2 ele entra <strong>no meio do caminho</strong>: o cliente conversa com o atacante achando que é o servidor, e o atacante repassa (e altera) para o servidor real. Ele vê e controla <strong>os dois lados</strong>.</p>
+<div class="diagram">   Fase 1 (passivo):   cliente ───────────────► servidor      (só escuta)
+
+   Fase 2 (ativo):     cliente ──► PROXY MITM ──► servidor
+                                   lê e ALTERA</div>
+<p><strong>Como redirecionamos sem hackear nada:</strong> o cliente já recebe o IP de destino por parâmetro. Basta apontá-lo ao proxy (<code>10.10.10.30</code>) em vez do servidor — é o "redirecionamento por configuração do serviço" que o enunciado pede. Cliente e servidor <strong>não mudam</strong>.</p>
+
+<h2 id="proxy">9. O proxy MITM <span class="pill">fase2/proxy/proxy_mitm.py</span></h2>
+<h3>9.1 Aceitar o cliente e abrir o servidor real</h3>
+<pre><code><span class="k">while</span> <span class="k">True</span>:
+    cliente_sock, endereco = escuta.accept()        <span class="c"># o cliente conecta no proxy</span>
+    threading.Thread(target=atender_sessao,          <span class="c"># 1 thread por sessão -&gt; concorrência</span>
+                     args=(cliente_sock, endereco, destino_servidor, regras),
+                     daemon=<span class="k">True</span>).start()</code></pre>
+<pre><code><span class="k">def</span> <span class="f">atender_sessao</span>(cliente_sock, endereco, destino_servidor, regras):
+    servidor_sock = socket.create_connection(destino_servidor)  <span class="c"># proxy abre o servidor real</span>
+    <span class="c"># duas threads de relay: uma por sentido (full-duplex)</span>
+    t_cs = threading.Thread(target=repassar,
+              args=(cliente_sock, servidor_sock, <span class="s">"C-&gt;S"</span>, regras[<span class="s">0</span>], sid, fechar), daemon=<span class="k">True</span>)
+    t_sc = threading.Thread(target=repassar,
+              args=(servidor_sock, cliente_sock, <span class="s">"S-&gt;C"</span>, regras[<span class="s">1</span>], sid, fechar), daemon=<span class="k">True</span>)
+    t_cs.start(); t_sc.start(); t_cs.join(); t_sc.join()</code></pre>
+
+<h3>9.2 Repassar e, se quiser, ALTERAR cada linha</h3>
+<pre><code><span class="k">def</span> <span class="f">repassar</span>(origem, destino, rotulo, regras, sid, fechar):
+    <span class="k">while</span> <span class="k">True</span>:
+        linha = ler_linha(origem)
+        <span class="k">if</span> <span class="k">not</span> linha: <span class="k">break</span>
+        nova = aplicar_regras(linha, regras)        <span class="c"># aqui o conteúdo é adulterado</span>
+        <span class="k">if</span> nova != linha:
+            log(sid, rotulo, <span class="s">f"*** MODIFICADO *** {linha!r} -&gt; {nova!r}"</span>)
+        destino.sendall(nova)                        <span class="c"># encaminha (já alterado)</span></code></pre>
+<pre><code><span class="k">def</span> <span class="f">aplicar_regras</span>(linha, regras):
+    <span class="k">for</span> alvo, troca <span class="k">in</span> regras:
+        <span class="k">if</span> alvo <span class="k">in</span> linha:
+            linha = linha.replace(alvo, troca)
+    <span class="k">return</span> linha
+
+<span class="c"># Demo padrão: TROCA DE IDENTIDADE em trânsito</span>
+REGRAS_C2S = [
+    (b<span class="s">"USER aluno\r\n"</span>,    b<span class="s">"USER professor\r\n"</span>),
+    (b<span class="s">"PASS senha123\r\n"</span>, b<span class="s">"PASS acesso2026\r\n"</span>),
+]</code></pre>
+<p><strong>Teoria:</strong> como o proxy fica no meio e o protocolo não tem proteção de integridade, ele pode trocar qualquer mensagem. As regras ficam isoladas no topo do arquivo — fáceis de editar. Há uma regra alternativa comentada que forja a resposta do servidor (<code>530</code> → <code>230</code>).</p>
+
+<h2 id="concorrencia">10. Concorrência e regiões críticas</h2>
+<p>O proxy atende várias sessões ao mesmo tempo (requisito da fase). Modelo de threads:</p>
+<div class="diagram">Thread principal ── accept() em laço
+   └──► Thread de sessão (1 por cliente)
+           ├──► Thread de relay C-&gt;S  (cliente  → servidor)
+           └──► Thread de relay S-&gt;C  (servidor → cliente)</div>
+<p>Cada sessão só mexe nos próprios sockets — <strong>nada é compartilhado entre sessões</strong>. O único estado compartilhado entre threads são (a) o contador de sessões e (b) a saída do log. Ambos protegidos por <code>Lock</code> (as <strong>regiões críticas</strong>):</p>
+<pre><code>_lock_contador = threading.Lock()
+_contador_sessoes = <span class="s">0</span>
+
+<span class="k">def</span> <span class="f">proximo_id</span>():
+    <span class="k">global</span> _contador_sessoes
+    <span class="k">with</span> _lock_contador:            <span class="c"># incremento atômico (senão IDs repetiriam)</span>
+        _contador_sessoes += <span class="s">1</span>
+        <span class="k">return</span> _contador_sessoes</code></pre>
+<ul>
+  <li><strong>Por que o lock no contador?</strong> <code>contador += 1</code> não é atômico; duas sessões ao mesmo tempo poderiam gerar o mesmo ID.</li>
+  <li><strong>Por que o lock no log?</strong> Sem ele, <code>print</code> de threads diferentes embaralha os caracteres na mesma linha.</li>
+  <li><strong>As regras não precisam de lock:</strong> são só leitura após a inicialização.</li>
+  <li><strong>Sem deadlock:</strong> os dois locks são "folha" (nunca um segura o outro) e ficam presos por um instante.</li>
+</ul>
+<p class="muted">Detalhes completos em <code>fase2/CONCORRENCIA.md</code>.</p>
+
+<h2 id="demo2">11. A adulteração — o clímax da Fase 2</h2>
+<p>O cliente faz login como <code>aluno</code>/<code>senha123</code>, mas o proxy troca a identidade em trânsito. <strong>Nenhum dos dois percebe:</strong></p>
+<pre><code><span class="c"># PROXY (adulterando)</span>
+[sessao 01][C-&gt;S] *** MODIFICADO *** b'USER aluno\r\n'   -&gt; b'USER professor\r\n'
+[sessao 01][C-&gt;S] *** MODIFICADO *** b'PASS senha123\r\n' -&gt; b'PASS acesso2026\r\n'
+
+<span class="c"># CLIENTE (acredita ser aluno)</span>
+&gt; USER aluno
+&lt; 230 login bem-sucedido
+
+<span class="c"># SERVIDOR (autenticou professor!)</span>
+Login OK: usuario='professor' de 10.10.10.20</code></pre>
+<div class="callout ok"><span class="lbl">O que isso prova</span><br>
+A <strong>identidade da sessão foi trocada</strong> sem o cliente nem o servidor detectarem — quebra combinada de <strong>integridade</strong> (a mensagem foi alterada) e <strong>autenticação</strong> (o servidor autenticou alguém que o cliente nunca pediu).</div>
+
+<!-- =========================== TUTORIAL =========================== -->
+<span class="part tut">Execução</span>
+<h2 id="tutorial">12. Tutorial: como rodar tudo</h2>
+<h3>12.0 Pré-requisito (qualquer caminho)</h3>
+<p><strong>Python 3</strong> instalado. Teste com <code>python3 --version</code> (Mac/Linux) ou <code>python --version</code> (Windows). Se faltar: <a href="https://www.python.org/downloads/">python.org/downloads</a> — no Windows, marque <em>"Add to PATH"</em>. Baixe o projeto: <code>git clone https://github.com/Paulo-Mansano/Trabalho_Lab_Redes.git</code></p>
+
+<h3>12.1 Caminho A — um computador só, via <code>localhost</code> (ideal para a Fase 2 / Mac)</h3>
+<p>Como o proxy, o servidor e o cliente são Python puro, os três papéis rodam na mesma máquina em portas diferentes. <strong>Sem VMs.</strong> Use <code>python3</code> no Mac/Linux (ou <code>python</code> no Windows).</p>
+<p><strong>Autoteste (confirma que funciona antes da aula):</strong></p>
+<pre><code>bash fase2/demo_mac.sh        <span class="c"># se o Mac só tiver "python": PY=python bash fase2/demo_mac.sh</span></code></pre>
+<p><strong>Demo ao vivo — 3 abas do Terminal, na raiz do projeto:</strong></p>
+<table>
+  <tr><th>Aba</th><th>Comando</th><th>Papel</th></tr>
+  <tr><td>1</td><td><code>python3 fase1/servidor/servidor.py 127.0.0.1 7071</code></td><td>servidor real</td></tr>
+  <tr><td>2</td><td><code>python3 fase2/proxy/proxy_mitm.py 7070 127.0.0.1 7071 --modificar</code></td><td>proxy MITM</td></tr>
+  <tr><td>3</td><td><code>python3 fase1/cliente/cliente.py 127.0.0.1 7070 aluno senha123</code></td><td>vítima</td></tr>
+</table>
+<p class="muted">O proxy escuta em <code>7070</code> (o endereço que a vítima usa) e encaminha ao servidor em <code>7071</code>. Para <strong>concorrência</strong>, abra uma 4ª aba e rode outro cliente ao mesmo tempo. Se o macOS pedir para permitir conexões, clique <strong>Permitir</strong>.</p>
+
+<h3>12.2 Caminho B — com VMs (rede isolada, para a Fase 1 e também a Fase 2)</h3>
+<p>Necessário para a Fase 1 (o sniffer de socket raw só funciona em Windows). Resumo; detalhes em <code>fase1/README.md</code> e <code>fase2/README.md</code>.</p>
+<div class="step"><div class="n">1</div><div class="b"><strong>Base.</strong> No VirtualBox, crie <strong>uma</strong> VM Windows (instalação desassistida), instale o <strong>Python (Add to PATH)</strong> e teste. <span class="pill">Antes de clonar, remova o ISO/disco auxiliar da instalação — senão os clones reinstalam o Windows.</span></div></div>
+<div class="step"><div class="n">2</div><div class="b"><strong>Clonar.</strong> Faça <strong>3 clones vinculados</strong> (MAC novo): <code>VM-servidor</code>, <code>VM-cliente</code>, <code>VM-observador</code>.</div></div>
+<div class="step"><div class="n">3</div><div class="b"><strong>Rede isolada + promíscuo</strong> (host, VMs desligadas). Rode <code>fase1/infra/configurar_rede_vms.ps1</code>, ou para cada VM:
+<pre><code>VBoxManage modifyvm "VM-servidor" --nic1 intnet --intnet1 labredes --nicpromisc1 allow-all</code></pre></div></div>
+<div class="step"><div class="n">4</div><div class="b"><strong>IPs fixos</strong> (dentro de cada VM, PowerShell Admin):
+<pre><code>VM-servidor:   netsh interface ip set address name="Ethernet" static 10.10.10.10 255.255.255.0
+VM-cliente:    netsh interface ip set address name="Ethernet" static 10.10.10.20 255.255.255.0
+VM-observador: netsh interface ip set address name="Ethernet" static 10.10.10.30 255.255.255.0</code></pre></div></div>
+<div class="step"><div class="n">5</div><div class="b"><strong>Firewall.</strong> Na <span class="vm srv">VM-servidor</span> libere a porta; na <span class="vm obs">VM-observador</span> desligue (necessário para o sniffer/proxy):
+<pre><code>servidor:   netsh advfirewall firewall add rule name="SLAP 7070" dir=in action=allow protocol=TCP localport=7070
+observador: netsh advfirewall set allprofiles state off</code></pre>
+Teste <code>ping 10.10.10.10</code> da VM-cliente.</div></div>
+
+<p><strong>Rodar a Fase 1 (escuta):</strong></p>
+<table>
+  <tr><td><span class="vm srv">VM-servidor</span></td><td><code>python servidor\servidor.py</code></td></tr>
+  <tr><td><span class="vm obs">VM-observador</span> (Admin)</td><td><code>python observador\sniffer.py 10.10.10.30</code></td></tr>
+  <tr><td><span class="vm cli">VM-cliente</span></td><td><code>python cliente\cliente.py 10.10.10.10 7070 aluno senha123</code></td></tr>
+</table>
+<p><strong>Rodar a Fase 2 (MITM):</strong> o cliente aponta para o <strong>proxy</strong> (<code>.30</code>), não para o servidor.</p>
+<table>
+  <tr><td><span class="vm srv">VM-servidor</span></td><td><code>python servidor\servidor.py</code> <span class="pill">(na pasta fase1)</span></td></tr>
+  <tr><td><span class="vm obs">VM-observador</span></td><td><code>python proxy\proxy_mitm.py 7070 10.10.10.10 7070 --modificar</code></td></tr>
+  <tr><td><span class="vm cli">VM-cliente</span></td><td><code>python cliente\cliente.py 10.10.10.30 7070 aluno senha123</code> <span class="pill">← IP do proxy</span></td></tr>
+</table>
+
+<!-- =========================== PERGUNTAS =========================== -->
+<h2 id="perguntas">13. Perguntas prováveis da banca</h2>
+<p class="muted">Clique para revelar. Treine em voz alta.</p>
+<details><summary>Qual a diferença entre um socket comum e um socket raw?</summary><div class="ans">O comum (TCP/UDP) entrega só os <em>dados</em> endereçados ao programa; o SO já processou IP/TCP. O raw entrega o <strong>pacote inteiro com os cabeçalhos</strong>, para o programa interpretar — é o que permite ler tráfego alheio (Fase 1).</div></details>
+<details><summary>O que é um ataque man-in-the-middle?</summary><div class="ans">O atacante se posiciona <strong>entre</strong> as duas pontas: cada lado pensa que fala diretamente com o outro, mas o tráfego passa pelo atacante, que pode ler e <strong>alterar</strong>. No nosso caso, redirecionamos o cliente para o proxy.</div></details>
+<details><summary>Como o proxy consegue alterar a mensagem sem ninguém notar?</summary><div class="ans">Porque o SLAP não tem <strong>integridade</strong> (nada assina/verifica a mensagem) nem <strong>autenticação</strong> das pontas. O proxy lê linha a linha, troca o conteúdo (ex.: <code>USER aluno</code> → <code>USER professor</code>) e repassa. Cliente e servidor aceitam como legítimo.</div></details>
+<details><summary>Como o proxy atende vários clientes ao mesmo tempo?</summary><div class="ans">Uma <strong>thread por conexão</strong> (no <code>accept</code>), e dentro de cada sessão duas threads de relay (um sentido cada). As sessões são independentes; o estado compartilhado (contador e log) é protegido por <code>Lock</code>.</div></details>
+<details><summary>O que são as "regiões críticas" do proxy?</summary><div class="ans">Trechos que mexem em estado compartilhado entre threads: o <strong>contador de sessões</strong> e a <strong>saída de log</strong>. Cada um é protegido por um <code>threading.Lock</code> para evitar corrida (IDs repetidos / linhas embaralhadas).</div></details>
+<details><summary>Por que escolheram TCP e não UDP?</summary><div class="ans">TCP dá entrega confiável e ordenada (base de um login real como o FTP) e prepara o terreno para o proxy e para o <strong>TLS</strong> da Fase 3, que roda sobre TCP.</div></details>
+<details><summary>Isso não é uma ferramenta de ataque ilegal?</summary><div class="ans">É uma prova de conceito acadêmica, só dentro da rede isolada do grupo (ou em localhost), cujo propósito declarado é <strong>fundamentar a defesa</strong> da Fase 3.</div></details>
+<details><summary>Como a Fase 3 impede esses ataques?</summary><div class="ans">Com <strong>TLS</strong>: o conteúdo é cifrado (o sniffer não lê, o proxy não altera de forma coerente) e o <strong>certificado do servidor</strong> autentica a ponta, impedindo o MITM de se passar pelo servidor — a adulteração é detectada no handshake.</div></details>
+
+<!-- =========================== ROTEIRO =========================== -->
+<h2 id="roteiro2">14. Roteiro de apresentação (Fase 2, no Mac)</h2>
+<div class="callout warn"><span class="lbl">Antes de começar</span><br>
+Rode <code>bash fase2/demo_mac.sh</code> uma vez e confirme que termina com "Login OK: usuario='professor'". Deixe as <strong>3 abas abertas</strong> com os comandos digitados (sem Enter). A demo em si dura ~1 min.</div>
+<div class="step g"><div class="n">1</div><div class="b"><strong>Contexto (30s).</strong> "Na Fase 1 um atacante só escutava. Agora ele entra no meio da conexão e consegue <em>alterar</em> as mensagens." Mostre o diagrama da seção 8.</div></div>
+<div class="step g"><div class="n">2</div><div class="b"><strong>Suba o servidor</strong> (aba 1) e <strong>o proxy</strong> (aba 2). Diga: "o cliente vai achar que fala com o servidor, mas vai cair no proxy."</div></div>
+<div class="step g"><div class="n">3</div><div class="b"><strong>Dispare o cliente</strong> (aba 3) com <code>aluno</code>/<code>senha123</code>. Ele mostra <code>USER aluno</code> e <code>230 login bem-sucedido</code>.</div></div>
+<div class="step g"><div class="n">4</div><div class="b"><strong>O clímax.</strong> Aponte a aba do <strong>proxy</strong>: linhas <code>*** MODIFICADO *** USER aluno → USER professor</code>. Depois a aba do <strong>servidor</strong>: <code>Login OK: usuario='professor'</code>. "O cliente acha que é aluno; o servidor autenticou professor. Ninguém percebeu a troca."</div></div>
+<div class="step g"><div class="n">5</div><div class="b"><strong>Concorrência (opcional).</strong> Abra uma 4ª aba e rode outro cliente; mostre no proxy as <code>sessao 01</code> e <code>sessao 02</code> em paralelo.</div></div>
+<div class="step g"><div class="n">6</div><div class="b"><strong>Fechamento (20s).</strong> "Sem integridade nem autenticação, dá para ler e adulterar tudo. Na Fase 3, o TLS encerra esse ataque." Abra para perguntas (seção 13).</div></div>
+<div class="callout"><span class="lbl">Se algo travar</span><br>
+Plano B: o <code>fase2/RELATORIO.md</code> tem as saídas salvas. Mostre a evidência gravada e narre — não tente depurar ao vivo.</div>
+
+<hr>
+<p class="muted" style="text-align:center">Guia gerado a partir do código do próprio grupo · Laboratório de Redes · PUCRS</p>
+
+</div>
+</body>
+</html>
