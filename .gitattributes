@@ -1,0 +1,2 @@
+# Garante final de linha LF em scripts shell (evita "bad interpreter" no macOS/Linux)
+*.sh text eol=lf
