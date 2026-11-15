@@ -1,2 +1,8 @@
 __pycache__/
 *.pyc
+
+# Certificados da Fase 3: gerados localmente com cert/gerar_cert.sh.
+# Chave privada e segredo -- nao versionar.
+fase3/cert/*.key
+fase3/cert/*.crt
+fase3/cert/*.pem
