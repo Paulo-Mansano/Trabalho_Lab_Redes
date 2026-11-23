@@ -114,17 +114,37 @@ Saída real do cenário 4 (detecção):
     Nenhuma credencial foi enviada.
 ```
 
+**Evidência do cenário 2 — sniffer da Fase 1 contra o TLS.** Captura apenas bytes
+cifrados (`\x16\x03…`), sem nenhum `USER`/`PASS` legível:
+
+![Sniffer da Fase 1 vendo só ciphertext](evidencias/sniffer_contra_tls.png)
+
+**Evidência do cenário 3 — proxy MITM da Fase 2 contra o TLS.** Ao interferir no
+handshake, provoca um alerta fatal do TLS (`Alert: Decode Error`) e a conexão é
+derrubada (`RST`):
+
+![Proxy MITM quebrando o TLS](evidencias/mitm_falhando.PNG)
+
 ## 6. Prova antes/depois com Wireshark
 
-> **[TAREFA DO GRUPO — capturas comparativas]**
-> Capturar na VM-observador, filtro `tcp.port == 7070`, e anexar em
-> `fase3/evidencias/`:
-> - **ANTES (Fases 1–2):** pacotes com `USER aluno` / `PASS senha123` legíveis no
->   payload. `![Antes - texto claro](evidencias/antes_texto_claro.png)`
-> - **DEPOIS (Fase 3):** apenas `TLSv1.3` no handshake e `Application Data`
->   cifrado; o conteúdo antes legível tornou-se ilegível.
->   `![Depois - TLS cifrado](evidencias/depois_tls.png)`
-> - (Opcional) print do cliente com `ATAQUE DETECTADO` ao enfrentar o MITM.
+Captura na porta 7070 (`tcp.port == 7070`), comparando o tráfego antes e depois
+da defesa.
+
+**ANTES (Fases 1–2) — texto claro.** O payload mostra `USER aluno` e
+`PASS senha123` legíveis (pacotes 5 e 7):
+
+![Antes - texto claro](evidencias/antes_texto_claro.png)
+
+**DEPOIS (Fase 3) — TLS.** O handshake aparece como `TLSv1.3` e todo o conteúdo
+vira `Application Data` cifrado: o que antes era legível tornou-se ilegível:
+
+![Depois - TLS cifrado](evidencias/depois_tls.png)
+
+Os mesmos dados que na Fase 1 trafegavam como `USER`/`PASS` em claro aparecem agora
+como `Encrypted Application Data` (pacotes 26 e 30, isolados pelo tamanho do
+registro TLS):
+
+![Pacotes USER/PASS agora cifrados](evidencias/numeros_pacotes_tls.png)
 
 ## 7. Análise de ameaças e detecção
 
